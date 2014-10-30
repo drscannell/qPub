@@ -1,6 +1,12 @@
-var qPub;
-(function(q) {
-	var find, bind, 
+/* qpub.js
+ *
+ * Exposes the following global variables:
+ * - qpub
+ * - q
+ */
+
+(function() {
+	var q, find, bind, unbind
 	qsa='querySelectorAll' in document;
 
 	// DOM searching
@@ -17,11 +23,16 @@ var qPub;
 	} else {
 		throw Error('oops');
 	}
+
 	// Event listener binding
 	bind = function(el, eventType, callback) {
 		el.addEventListener(eventType, callback, false);
 	};
+	unbind = function(el, eventType, callback) {
+		el.removeEventListener(eventType, callback);
+	};
 
+	// Factory
 	q = function(query, context) {
 		return (function(query, context) {
 			var els = find(query, context)
@@ -31,10 +42,23 @@ var qPub;
 				}
 				return this;
 			};
+			els.off = function(eventType, callback) {
+				for (var i = 0; i < els.length; i++) {
+					unbind(els[i], eventType, callback);
+				}
+				return this;
+			};
 			return els;
 		})(query, context);
 	};
 
-	window.q = q;
+	// Expose global variables
+	if ('q' in window) {
+		console.error('qpub.js conflict: window.q already defined. ' +
+				'Exposing window.qpub instead.');
+		window.qpub = q;
+	} else {
+		window.q = q;
+	}
 
-})(qPub);
+})();

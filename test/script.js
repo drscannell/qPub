@@ -14,8 +14,13 @@ window.addEventListener('load', function() {
 	});
 
 	blockquotes = q('blockquote');
+	var clickCount = 0;
 	blockquotes.on('click', function(event) {
+		clickCount++;
 		event.target.innerHTML = event.target.innerHTML + '.';
+		if (clickCount > 5) {
+			blockquotes.off('click');
+		}
 	});
 	
 }, false);
