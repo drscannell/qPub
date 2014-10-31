@@ -21,15 +21,32 @@
 			return found;
 		};
 	} else {
-		throw Error('oops');
+		console.error('document.querySelectorAll unavailable');
 	}
 
 	// Event listener binding
+	var events = {};
 	bind = function(el, eventType, callback) {
+		if (!events.hasOwnProperty(el)) {
+			events[el] = {};
+		}
+		if (!events[el].hasOwnProperty(eventType)) {
+			events[el][eventType] = [];
+		}
+		events[el][eventType].push(callback);
 		el.addEventListener(eventType, callback, false);
 	};
 	unbind = function(el, eventType, callback) {
-		el.removeEventListener(eventType, callback);
+		if (callback) {
+			el.removeEventListener(eventType, callback);
+		} else if (events.hasOwnProperty(el)) { 
+			if (events[el].hasOwnProperty(eventType)) {
+				var handlers = events[el][eventType];
+				for (var i = 0; i < handlers.length; i++) {
+					el.removeEventListener(eventType, handlers[i]);
+				}
+			}
+		}
 	};
 
 	// Factory

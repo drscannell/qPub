@@ -18,7 +18,7 @@ window.addEventListener('load', function() {
 	blockquotes.on('click', function(event) {
 		clickCount++;
 		event.target.innerHTML = event.target.innerHTML + '.';
-		if (clickCount > 5) {
+		if (clickCount > 2) {
 			blockquotes.off('click');
 		}
 	});
