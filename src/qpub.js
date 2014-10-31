@@ -6,23 +6,45 @@
  */
 
 (function() {
-	var q, find, bind, unbind
+	var q, find, executeQuery, bind, unbind
 	qsa='querySelectorAll' in document;
 
 	// DOM searching
 	if (qsa) {
 		find = function(query, context) {
+
 			var found = new Array();
 			context = context || document;
-			var _found = context.querySelectorAll(query);
-			for (var i = 0; i < _found.length; i++) {
-				found.push(_found[i]);
+
+			// query string
+			if (typeof query === 'string') {
+				found = executeQuery(query, context);
+
+			// results array
+			} else if (Array.isArray(query)) {
+				for (var i = 0; i < query.length; i++) {
+					if (typeof query === 'string') {
+						found = found.concat(executeQuery(query, context));
+					} else if (query[i].nodeType) {
+						found.push(query[i]);
+					}
+				}
 			}
 			return found;
 		};
 	} else {
 		console.error('document.querySelectorAll unavailable');
 	}
+
+	executeQuery = function(query, context) {
+		var found = [];
+		var _found = context.querySelectorAll(query);
+		for (var i = 0; i < _found.length; i++) {
+			found.push(_found[i]);
+		}
+		return found;
+	};
+	
 
 	// Event listener binding
 	var events = {};
@@ -52,7 +74,7 @@
 	// Factory
 	q = function(query, context) {
 		return (function(query, context) {
-			var els = find(query, context)
+			var els = find(query, context);
 			els.on = function(eventType, callback) {
 				for (var i = 0; i < els.length; i++) {
 					bind(els[i], eventType, callback);

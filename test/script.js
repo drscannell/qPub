@@ -7,7 +7,7 @@ window.addEventListener('load', function() {
 	for (var i = 0; i < paras.length; i++) {
 		console.log(paras[i]);
 	}
-	paras.on('mouseover', function(event) {
+	q(paras).on('mouseover', function(event) {
 		event.target.style.color = 'red';
 	}).on('mouseout', function(event) {
 		event.target.style.color = 'inherit';
