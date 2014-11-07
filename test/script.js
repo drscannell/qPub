@@ -25,6 +25,9 @@ window.addEventListener('load', function() {
 
 	console.log(q('p').hasClass('thirdpara'));
 
-	q('.thirdpara').addClass('bolded').addClass('bolded');
+	q('.thirdpara').addClass('bolded')
+		.addClass('bolded').on('click', function(event) {
+			q(this).addClass('clicked');
+		});
 	
 }, false);

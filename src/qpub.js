@@ -30,6 +30,9 @@
 						found.push(query[i]);
 					}
 				}
+			// DOM node
+			} else if ('nodeType' in query && query.nodeType === 1) {
+				found.push(query);
 			}
 			return found;
 		};
@@ -100,6 +103,7 @@
 
 	// Factory
 	q = function(query, context) {
+		console.log('q');
 		return (function(query, context) {
 			var els = find(query, context);
 			els.on = function(eventType, callback) {
