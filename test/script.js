@@ -22,5 +22,7 @@ window.addEventListener('load', function() {
 			blockquotes.off('click');
 		}
 	});
+
+	console.log(q('p').hasClass('thirdpara'));
 	
 }, false);

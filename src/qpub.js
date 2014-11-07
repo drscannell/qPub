@@ -6,8 +6,10 @@
  */
 
 (function() {
-	var q, find, executeQuery, bind, unbind
-	qsa='querySelectorAll' in document;
+	var q, find, executeQuery, 
+		bind, unbind, 
+		doAnyHaveClass, hasClass,getClasses,
+		qsa='querySelectorAll' in document;
 
 	// DOM searching
 	if (qsa) {
@@ -71,6 +73,31 @@
 		}
 	};
 
+	doAnyHaveClass = function(classname, els) {
+		for (var i = 0; i < els.length; i++) {
+			console.log('tic');
+			if (hasClass(classname, els[i])) {
+				return true;
+			}
+		}
+		return false;
+	};
+	hasClass = function(classname, el) {
+		var classnames = getClasses(el);
+		for (var i = 0; i < classnames.length; i++) {
+			if (classnames[i] === classname) {
+				return true;
+			}
+		}
+		return false;
+	};
+	getClasses = function(el) {
+		if (el.className) {
+			return el.className.split(' ');
+		}
+		return [];
+	};
+
 	// Factory
 	q = function(query, context) {
 		return (function(query, context) {
@@ -86,6 +113,9 @@
 					unbind(els[i], eventType, callback);
 				}
 				return this;
+			};
+			els.hasClass = function(classname) {
+				return doAnyHaveClass(classname, els);
 			};
 			return els;
 		})(query, context);
