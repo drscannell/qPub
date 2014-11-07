@@ -24,5 +24,7 @@ window.addEventListener('load', function() {
 	});
 
 	console.log(q('p').hasClass('thirdpara'));
+
+	q('.thirdpara').addClass('bolded').addClass('bolded');
 	
 }, false);

@@ -6,9 +6,8 @@
  */
 
 (function() {
-	var q, find, executeQuery, 
-		bind, unbind, 
-		doAnyHaveClass, hasClass,getClasses,
+	var q, find, executeQuery, bind, unbind, 
+		doAnyHaveClass, hasClass,getClasses, addClass,
 		qsa='querySelectorAll' in document;
 
 	// DOM searching
@@ -75,7 +74,6 @@
 
 	doAnyHaveClass = function(classname, els) {
 		for (var i = 0; i < els.length; i++) {
-			console.log('tic');
 			if (hasClass(classname, els[i])) {
 				return true;
 			}
@@ -84,18 +82,20 @@
 	};
 	hasClass = function(classname, el) {
 		var classnames = getClasses(el);
-		for (var i = 0; i < classnames.length; i++) {
-			if (classnames[i] === classname) {
-				return true;
-			}
-		}
-		return false;
+		return classnames.indexOf(classname) > -1;
 	};
 	getClasses = function(el) {
 		if (el.className) {
 			return el.className.split(' ');
 		}
 		return [];
+	};
+	addClass = function(classname, el) {
+		var classnames = getClasses(el);
+		if (classnames.indexOf(classname) === -1) {
+			classnames.push(classname);
+			el.className = classnames.join(' ');
+		}
 	};
 
 	// Factory
@@ -116,6 +116,12 @@
 			};
 			els.hasClass = function(classname) {
 				return doAnyHaveClass(classname, els);
+			};
+			els.addClass = function(classname) {
+				for (var i = 0; i < els.length; i++) {
+					addClass(classname, els[i]);
+				}
+				return this;
 			};
 			return els;
 		})(query, context);
