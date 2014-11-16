@@ -12,6 +12,7 @@
 		qsa='querySelectorAll' in document;
 
 	// Feature Detection
+	hasTouchEvents = 'ontouchstart' in window;
 	hasLocalStorage = (function() {
 		if ('localStorage' in window) {
 			if ('setItem' in window.localStorage && 
@@ -199,6 +200,7 @@
 	q = function(query, context) {
 		return Object.create(queryObject).find(query, context);
 	};
+	q.hasTouchEvents = hasTouchEvents;
 	q.hasLocalStorage = hasLocalStorage;
 	q.storage = storage;
 

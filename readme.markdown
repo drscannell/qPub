@@ -15,6 +15,7 @@ This script is a lightweight alternative to jQuery, designed for use in eBooks.
 	```
 	q('.button').on('click', function(event) {
 		doSomething();
+		q(this).off('click');
 	});
 	```
 
@@ -32,7 +33,7 @@ This script is a lightweight alternative to jQuery, designed for use in eBooks.
 	q('.sidebar').toggle('sidebar-visible');
 	```
 
-- Use local storage
+- Detect and use local storage
 
 	```
 	if (q.hasLocalStorage) {
@@ -41,14 +42,10 @@ This script is a lightweight alternative to jQuery, designed for use in eBooks.
 	}
 	```
 
-- Detect features
+- Detect touch events
 
 	```
 	if (q.hasTouchEvents) {
-		if (q.hasLocalStorage) {
-			if (q.hasAjax) {
-
-			}
-		}
+		activateSwipeEvents();
 	}
 	```

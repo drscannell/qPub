@@ -1,6 +1,7 @@
 window.addEventListener('load', function() {
 	console.log('qPub test');
 
+	console.log('touch events? ' + q.hasTouchEvents);
 	console.log('local storage? ' + q.hasLocalStorage);
 
 	if (q.hasLocalStorage) {
