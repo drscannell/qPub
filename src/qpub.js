@@ -6,9 +6,9 @@
  */
 
 (function() {
-	var q, find, executeQuery, bind, unbind, 
+	var q, queryObject, find, executeQuery, bind, unbind, 
 		doAnyHaveClass, hasClass,getClasses, addClass, removeClass, 
-		toggleClass, hasLocalStorage,
+		toggleClass, hasLocalStorage, storage,
 		qsa='querySelectorAll' in document;
 
 	// Feature Detection
@@ -23,6 +23,23 @@
 		}
 		return false;
 	})();
+
+	// Local Storage Proxy
+	storage = {};
+	storage.setItem = function(key, val) {
+		if (hasLocalStorage) {
+			localStorage.setItem(key, val);
+		} else {
+			console.error('HTML5 Local Storage unsupported in this environment');
+		}
+	};
+	storage.getItem = function(key) {
+		if (hasLocalStorage) {
+			return localStorage.getItem(key);
+		} else {
+			console.error('HTML5 Local Storage unsupported in this environment');
+		}
+	};
 
 	// DOM searching
 	if (qsa) {
@@ -130,7 +147,12 @@
 		}
 	};
 
-	var queryObject = new Array();
+	/* queryObject
+	 * This is the prototype for objects
+	 * returned by querying the DOM via
+	 * the q object
+	 */
+	queryObject = new Array();
 	queryObject.isQueryObject = true;
 	queryObject.find = function(query, context) {
 		var arr = find(query, context);
@@ -173,13 +195,12 @@
 		return this;
 	};
 
-	// Factory
+	// global object
 	q = function(query, context) {
 		return Object.create(queryObject).find(query, context);
 	};
-	q.hasLocalStorage = function(){
-		return hasLocalStorage;
-	}
+	q.hasLocalStorage = hasLocalStorage;
+	q.storage = storage;
 
 	// Expose global variables
 	if ('q' in window) {

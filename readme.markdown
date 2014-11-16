@@ -34,6 +34,13 @@ This script is a lightweight alternative to jQuery, designed for use in eBooks.
 
 - Use local storage
 
+	```
+	if (q.hasLocalStorage) {
+		var prevTimestamp = q.storage.getItem('timestamp');
+		q.storage.setItem('timestamp', Date.now().toString());
+	}
+	```
+
 - Detect features
 
 	```

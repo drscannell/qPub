@@ -1,14 +1,22 @@
 window.addEventListener('load', function() {
 	console.log('qPub test');
 
-	console.log('local storage? ' + q.hasLocalStorage());
+	console.log('local storage? ' + q.hasLocalStorage);
+
+	if (q.hasLocalStorage) {
+		var t = Date.now().toString();
+		console.log(t);
+		q.storage.setItem('timeTest', t);
+		var result = q.storage.getItem('timeTest');
+		console.log(result);
+		console.log('q.storage works? ' + (t === result));
+	}
 
 	q('p').on('click', function(event) {
 		q(this).toggle('red');
 	});
 
 	var paras = q('p');
-	console.log(paras);
 	q('p').on('click', function(event) {
 		q(this).toggle('bolded');
 	});
@@ -18,7 +26,6 @@ window.addEventListener('load', function() {
 
 	console.log('paras:');
 	var paras = q('.para');
-	console.log(paras);
 	for (var i = 0; i < paras.length; i++) {
 		console.log(paras[i]);
 	}
