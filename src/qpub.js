@@ -8,7 +8,21 @@
 (function() {
 	var q, find, executeQuery, bind, unbind, 
 		doAnyHaveClass, hasClass,getClasses, addClass, removeClass, 
-		toggleClass, qsa='querySelectorAll' in document;
+		toggleClass, hasLocalStorage,
+		qsa='querySelectorAll' in document;
+
+	// Feature Detection
+	hasLocalStorage = (function() {
+		if ('localStorage' in window) {
+			if ('setItem' in window.localStorage && 
+				'getItem' in window.localStorage) {
+				var t = Date.now().toString();
+				localStorage.setItem(t,t);
+				return t === localStorage.getItem(t);
+			}
+		}
+		return false;
+	})();
 
 	// DOM searching
 	if (qsa) {
@@ -116,6 +130,7 @@
 		}
 	};
 
+
 	// Factory
 	q = function(query, context) {
 		console.log('q');
@@ -157,6 +172,9 @@
 			return els;
 		})(query, context);
 	};
+	q.hasLocalStorage = function(){
+		return hasLocalStorage;
+	}
 
 	// Expose global variables
 	if ('q' in window) {

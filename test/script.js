@@ -1,6 +1,8 @@
 window.addEventListener('load', function() {
 	console.log('qPub test');
 
+	console.log('local storage? ' + q.hasLocalStorage());
+
 	console.log('paras:');
 	var paras = q('.para');
 	console.log(paras);
