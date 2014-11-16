@@ -36,7 +36,7 @@
 				found = executeQuery(query, context);
 
 			// results array
-			} else if (Array.isArray(query)) {
+			} else if (Array.isArray(query) || 'isQueryObject' in query) {
 				for (var i = 0; i < query.length; i++) {
 					if (typeof query === 'string') {
 						found = found.concat(executeQuery(query, context));
@@ -118,7 +118,7 @@
 		var classnames = getClasses(el);
 		var i = classnames.indexOf(classname);
 		if (i > -1) {
-			classnames.pop(i);
+			classnames.splice(i, 1);
 			el.className = classnames.join(' ');
 		}
 	};
@@ -130,47 +130,52 @@
 		}
 	};
 
+	var queryObject = new Array();
+	queryObject.isQueryObject = true;
+	queryObject.find = function(query, context) {
+		var arr = find(query, context);
+		for (var i = 0; i < arr.length; i++) {
+			this.push(arr[i]);
+		}
+		return this;
+	};
+	queryObject.on = function(eventType, callback) {
+		for (var i = 0; i < this.length; i++) {
+			bind(this[i], eventType, callback);
+		}
+		return this;
+	};
+	queryObject.off = function(eventType, callback) {
+		for (var i = 0; i < this.length; i++) {
+			unbind(this[i], eventType, callback);
+		}
+		return this;
+	};
+	queryObject.hasClass = function(classname) {
+		return doAnyHaveClass(classname, this);
+	};
+	queryObject.addClass = function(classname) {
+		for (var i = 0; i < this.length; i++) {
+			addClass(classname, this[i]);
+		}
+		return this;
+	};
+	queryObject.removeClass = function(classname) {
+		for (var i = 0; i < this.length; i++) {
+			removeClass(classname, this[i]);
+		}
+		return this;
+	};
+	queryObject.toggle = function(classname) {
+		for (var i = 0; i < this.length; i++) {
+			toggleClass(classname, this[i]);
+		}
+		return this;
+	};
 
 	// Factory
 	q = function(query, context) {
-		console.log('q');
-		return (function(query, context) {
-			var els = find(query, context);
-			els.on = function(eventType, callback) {
-				for (var i = 0; i < els.length; i++) {
-					bind(els[i], eventType, callback);
-				}
-				return this;
-			};
-			els.off = function(eventType, callback) {
-				for (var i = 0; i < els.length; i++) {
-					unbind(els[i], eventType, callback);
-				}
-				return this;
-			};
-			els.hasClass = function(classname) {
-				return doAnyHaveClass(classname, els);
-			};
-			els.addClass = function(classname) {
-				for (var i = 0; i < els.length; i++) {
-					addClass(classname, els[i]);
-				}
-				return this;
-			};
-			els.removeClass = function(classname) {
-				for (var i = 0; i < els.length; i++) {
-					removeClass(classname, els[i]);
-				}
-				return this;
-			};
-			els.toggle = function(classname) {
-				for (var i = 0; i < els.length; i++) {
-					toggleClass(classname, els[i]);
-				}
-				return this;
-			};
-			return els;
-		})(query, context);
+		return Object.create(queryObject).find(query, context);
 	};
 	q.hasLocalStorage = function(){
 		return hasLocalStorage;

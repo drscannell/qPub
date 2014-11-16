@@ -3,16 +3,30 @@ window.addEventListener('load', function() {
 
 	console.log('local storage? ' + q.hasLocalStorage());
 
+	q('p').on('click', function(event) {
+		q(this).toggle('red');
+	});
+
+	var paras = q('p');
+	console.log(paras);
+	q('p').on('click', function(event) {
+		q(this).toggle('bolded');
+	});
+
+
+	
+
 	console.log('paras:');
 	var paras = q('.para');
 	console.log(paras);
 	for (var i = 0; i < paras.length; i++) {
 		console.log(paras[i]);
 	}
+	console.log('mouseover to red');
 	q(paras).on('mouseover', function(event) {
-		event.target.style.color = 'red';
+		event.target.style.fontStyle = 'italic';
 	}).on('mouseout', function(event) {
-		event.target.style.color = 'inherit';
+		event.target.style.fontStyle = 'inherit';
 	});
 
 	blockquotes = q('blockquote');
