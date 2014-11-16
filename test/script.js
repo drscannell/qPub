@@ -29,5 +29,19 @@ window.addEventListener('load', function() {
 		.addClass('bolded').on('click', function(event) {
 			q(this).addClass('clicked');
 		});
+
+	// removeClass
+	console.log("q('.fourthpara').removeClass('remove-me');");
+	console.log('before: ' + q('.fourthpara')[0].className);
+	q('.fourthpara').removeClass('remove-me');
+	console.log('after: ' + q('.fourthpara')[0].className);
+
+	// toggleClass
+	console.log("q('.fourthpara').toggle('remove-me');");
+	console.log('before: class="' + q('.fourthpara')[0].className + '"');
+	q('.fourthpara').toggle('toggle-me');
+	console.log('once: class="' + q('.fourthpara')[0].className + '"');
+	q('.fourthpara').toggle('toggle-me');
+	console.log('twice: class="' + q('.fourthpara')[0].className + '"');
 	
 }, false);

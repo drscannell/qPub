@@ -7,8 +7,8 @@
 
 (function() {
 	var q, find, executeQuery, bind, unbind, 
-		doAnyHaveClass, hasClass,getClasses, addClass,
-		qsa='querySelectorAll' in document;
+		doAnyHaveClass, hasClass,getClasses, addClass, removeClass, 
+		toggleClass, qsa='querySelectorAll' in document;
 
 	// DOM searching
 	if (qsa) {
@@ -100,6 +100,21 @@
 			el.className = classnames.join(' ');
 		}
 	};
+	removeClass = function(classname, el) {
+		var classnames = getClasses(el);
+		var i = classnames.indexOf(classname);
+		if (i > -1) {
+			classnames.pop(i);
+			el.className = classnames.join(' ');
+		}
+	};
+	toggleClass = function(classname, el) {
+		if (hasClass(classname, el)) {
+			removeClass(classname, el);
+		} else {
+			addClass(classname, el);
+		}
+	};
 
 	// Factory
 	q = function(query, context) {
@@ -124,6 +139,18 @@
 			els.addClass = function(classname) {
 				for (var i = 0; i < els.length; i++) {
 					addClass(classname, els[i]);
+				}
+				return this;
+			};
+			els.removeClass = function(classname) {
+				for (var i = 0; i < els.length; i++) {
+					removeClass(classname, els[i]);
+				}
+				return this;
+			};
+			els.toggle = function(classname) {
+				for (var i = 0; i < els.length; i++) {
+					toggleClass(classname, els[i]);
 				}
 				return this;
 			};
