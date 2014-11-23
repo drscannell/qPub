@@ -10,13 +10,14 @@ This script is a lightweight alternative to jQuery, designed for use in eBooks.
 	var paras = q('p');
 	```
 
-- Add/remove event listeners
+- Add/remove/trigger event listeners
 
 	```
 	q('.button').on('click', function(event) {
 		doSomething();
 		q(this).off('click');
 	});
+	q('.button').trigger('click');
 	```
 
 - Add/remove/toggle classes
