@@ -188,6 +188,25 @@ QUnit.asyncTest("trigger named click event listener", function(assert) {
 	},DELAY);
 });
 
+QUnit.asyncTest("trigger 3 click event listeners", function(assert) {
+	var el, expected, observed, handler, DELAY=20;
+	expect(1);
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	observed = 0;
+	expected = 8;
+	q(el).on('click', function(){observed += 2});
+	q(el).on('click', function(){observed += 2});
+	q(el).on('click', function(){observed += 4});
+	q(el).trigger('click');
+	setTimeout(function() {
+		assert.equal(observed, expected, 'Expected: 3 event handlers to be' + 
+			' triggered within ' + DELAY + ' ms');
+		QUnit.start();
+	},DELAY);
+});
+
 // add class
 // remove class
 // toggle class
