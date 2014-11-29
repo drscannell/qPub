@@ -1,84 +1,96 @@
-var testHelper = {};
-testHelper.fixture = document.getElementById('qunit-fixture');
-
-testHelper.trigger = function(el, eventType){
-	/* http://goo.gl/jTDKmf
-	 */
-  if (el.fireEvent) {
-    el.fireEvent('on' + eventType);
-  } else {
-    var evObj = document.createEvent('Events');
-    evObj.initEvent(eventType, true, false);
-    el.dispatchEvent(evObj);
-  }
-}
-
-testHelper.addElement = function(options) {
-	options = options || {};
-	var tagname = options.tagname || 'div';
-	var classname = options.classname || null;
-	var idval = options.idval || null;
-	var addTo = options.addTo || testHelper.fixture;
-	var el = document.createElement(tagname);
-	if (classname) el.setAttribute('class', classname);
-	if (idval) el.setAttribute('id', idval);
-	addTo.appendChild(el);
-};
-
 QUnit.test("window.q exposed", function(assert) {
 	assert.ok('q' in window, 'Expect "q" property in window object');
 });
 
 QUnit.test("find by tagname", function(assert) {
-	testHelper.fixture.appendChild(document.createElement('blink'));
-	testHelper.fixture.appendChild(document.createElement('blink'));
-	testHelper.fixture.appendChild(document.createElement('blink'));
-	var blinks = q('blink');
-	assert.equal(blinks.length, 3, 'Expected: 3 results');
+	var before, after, expected, observed;
+	expected = 3;
+	before = q('p').length;
+	for (var i = 0; i < expected; i++) {
+		testHelper.addElement({
+			'tagname':'p'
+		});
+	}
+	after = q('p').length;
+	observed = after - before;
+	assert.equal(observed, expected, 'Expected: ' + expected + ' results');
 });
 
 QUnit.test("find by id", function(assert) {
-	testHelper.addElement({
-		'tagname':'blink',
-		'idval':'findme'
-	});
-	var blinks = q('#findme');
-	assert.equal(blinks.length, 1, 'Expected: 1 result');
+	var before, after, expected, observed;
+	expected = 1;
+	before = q('#findme').length;
+	for (var i = 0; i < expected; i++) {
+		testHelper.addElement({
+			'tagname':'p',
+			'idval':'findme'
+		});
+	}
+	after = q('#findme').length;
+	observed = after - before;
+	assert.equal(observed, expected, 'Expected: ' + expected + ' results');
 });
 
 QUnit.test("find by class", function(assert) {
-	var blink = document.createElement('blink');
-	blink.setAttribute('class', 'something findme something-else');
-	testHelper.fixture.appendChild(blink);
-	var blinks = q('.findme');
-	assert.equal(blinks.length, 1, 'Expected: 1 result');
+	var before, after, expected, observed;
+	expected = 3;
+	before = q('.findme').length;
+	testHelper.addElement({
+		'tagname':'p',
+		'classname':'findme'
+	});
+	testHelper.addElement({
+		'tagname':'div',
+		'classname':'findme'
+	});
+	testHelper.addElement({
+		'tagname':'a',
+		'classname':'findme'
+	});
+	after = q('.findme').length;
+	observed = after - before;
+	assert.equal(observed, expected, 'Expected: ' + expected + ' results');
 });
 
 QUnit.test("find by tagname & class", function(assert) {
-	var blink = document.createElement('blink');
-	blink.setAttribute('class', 'something findme something-else');
-	testHelper.fixture.appendChild(blink);
-	var rt = document.createElement('rt');
-	blink.setAttribute('class', 'something findme something-else');
-	testHelper.fixture.appendChild(blink);
-	var blinks = q('blink.findme');
-	assert.equal(blinks.length, 1, 'Expected: 1 result');
+	var before, after, expected, observed;
+	expected = 1;
+	before = q('div.findme').length;
+	testHelper.addElement({
+		'tagname':'p',
+		'classname':'para findme fuzz'
+	});
+	testHelper.addElement({
+		'tagname':'div',
+		'classname':'div findme static'
+	});
+	testHelper.addElement({
+		'tagname':'a',
+		'classname':'findme'
+	});
+	after = q('div.findme').length;
+	observed = after - before;
+	assert.equal(observed, expected, 'Expected: ' + expected + ' results');
 });
 
-QUnit.asyncTest("add event listener", function(assert) {
+QUnit.asyncTest("add click event listener", function(assert) {
+	var el, isFired, DELAY;
 	expect(1);
-	var blink = document.createElement('blink');
-	testHelper.fixture.appendChild(blink);
-	var fired = false;
-	q(blink).on('click', function(event) {
-		fired = true;
+	DELAY = 100; // ms
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	isFired = false;
+	q(el).on('click', function(event) {
+		isFired = true;
 		assert.ok(true, 'callback successfully fired');
 		QUnit.start();
 	});
-	testHelper.trigger(blink, 'click');
+	testHelper.trigger(el, 'click');
 	setTimeout(function() {
-		if (!fired) assert.ok(false, 'callback never fired');
-	},100);
+		if (!isFired) assert.ok(false, 'callback failed to fire' +
+			' within ' + DELAY + ' ms');
+	},DELAY);
 });
 
 
