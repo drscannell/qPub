@@ -6,7 +6,7 @@
  */
 
 (function() {
-	var q, queryObject, find, executeQuery, bind, unbind, 
+	var q, queryObject, find, executeQuery, bind, unbind, trigger,
 		doAnyHaveClass, hasClass,getClasses, addClass, removeClass, 
 		toggleClass, hasLocalStorage, storage,
 		qsa='querySelectorAll' in document;
@@ -106,6 +106,17 @@
 			}
 		}
 	};
+	trigger = function(el, eventType){
+		/* http://goo.gl/jTDKmf
+		 */
+		if (el.fireEvent) {
+			el.fireEvent('on' + eventType);
+		} else {
+			var evObj = document.createEvent('Events');
+			evObj.initEvent(eventType, true, false);
+			el.dispatchEvent(evObj);
+		}
+	}
 
 	doAnyHaveClass = function(classname, els) {
 		for (var i = 0; i < els.length; i++) {
@@ -173,6 +184,11 @@
 			unbind(this[i], eventType, callback);
 		}
 		return this;
+	};
+	queryObject.trigger = function(eventType) {
+		for (var i = 0; i < this.length; i++) {
+			trigger(this[i], eventType);
+		}
 	};
 	queryObject.hasClass = function(classname) {
 		return doAnyHaveClass(classname, this);

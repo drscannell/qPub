@@ -73,25 +73,122 @@ QUnit.test("find by tagname & class", function(assert) {
 	assert.equal(observed, expected, 'Expected: ' + expected + ' results');
 });
 
-QUnit.asyncTest("add click event listener", function(assert) {
-	var el, isFired, DELAY;
+// add event listener
+
+QUnit.asyncTest("add one click event listener", function(assert) {
+	var el, expected, observed, DELAY=20;
 	expect(1);
-	DELAY = 100; // ms
 	el = testHelper.addElement({
 		'tagname':'button'
 	});
-	isFired = false;
+	expected = 'event fired';
+	observed = 'event not fired';
 	q(el).on('click', function(event) {
-		isFired = true;
-		assert.ok(true, 'callback successfully fired');
-		QUnit.start();
+		observed = 'event fired';
 	});
 	testHelper.trigger(el, 'click');
 	setTimeout(function() {
-		if (!isFired) assert.ok(false, 'callback failed to fire' +
+		assert.equal(observed, expected, 'Expected: callback to fire' + 
 			' within ' + DELAY + ' ms');
+		QUnit.start();
 	},DELAY);
 });
 
+QUnit.asyncTest("add two click event listeners", function(assert) {
+	var el, expected, observed, DELAY=20;
+	expect(1);
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	expected = 5;
+	observed = 0;
+	q(el).on('click', function(event) {
+		observed += 2;
+	});
+	q(el).on('click', function(event) {
+		observed += 3;
+	});
+	testHelper.trigger(el, 'click');
+	setTimeout(function() {
+		assert.equal(observed, expected, 'Expected: 2 incrementing callbacks' +
+		 '	to fire within ' + DELAY + ' ms');
+		QUnit.start();
+	},DELAY);
+});
 
+// remove event listener
+
+QUnit.asyncTest("remove all click event listeners", function(assert) {
+	var el, expected, observed, DELAY=20;
+	expect(1);
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	expected = 'event not fired';
+	observed = 'event not fired';
+	q(el).on('click', function(event) {
+		observed = 'event fired';
+	});
+	q(el).on('click', function(event) {
+		observed = 'event fired';
+	});
+	q(el).off('click');
+	testHelper.trigger(el, 'click');
+	setTimeout(function() {
+		assert.equal(observed, expected, 'Expected: event handler to be' + 
+			' removed within ' + DELAY + ' ms');
+		QUnit.start();
+	},DELAY);
+});
+
+QUnit.asyncTest("remove named click event listeners", function(assert) {
+	var el, expected, observed, handler, DELAY=20;
+	expect(1);
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	observed = 'no handlers fired!';
+	expected = 'right handler fired';
+	var handlerToKeep = function(event) {
+		observed = 'right handler fired';
+	};
+	var handlerToRemove = function(event) {
+		observed = 'wrong handler fired';
+	};
+	q(el).on('click', handlerToKeep);
+	q(el).on('click', handlerToRemove);
+	q(el).off('click', handlerToRemove);
+	testHelper.trigger(el, 'click');
+	setTimeout(function() {
+		assert.equal(observed, expected, 'Expected: event handler to be' + 
+			' removed within ' + DELAY + ' ms');
+		QUnit.start();
+	},DELAY);
+});
+
+// trigger event listener
+
+QUnit.asyncTest("trigger named click event listener", function(assert) {
+	var el, expected, observed, handler, DELAY=20;
+	expect(1);
+	el = testHelper.addElement({
+		'tagname':'button'
+	});
+	observed = 'no handlers fired!';
+	expected = 'handler fired';
+	var handler = function(event) {
+		observed = 'handler fired';
+	};
+	q(el).on('click', handler);
+	q(el).trigger('click');
+	setTimeout(function() {
+		assert.equal(observed, expected, 'Expected: event handler to be' + 
+			' triggered within ' + DELAY + ' ms');
+		QUnit.start();
+	},DELAY);
+});
+
+// add class
+// remove class
+// toggle class
 
